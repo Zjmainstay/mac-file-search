@@ -32,9 +32,16 @@ go.work
 Thumbs.db
 
 # Build artifacts
-mac-search-app/build/
+mac-search-app/build/bin/
 mac-search-app/bin/
 mac-search-app/mac-search-app
+
+# 保留图标和配置文件
+!mac-search-app/build/appicon.png
+!mac-search-app/build/appicon-original.png
+!mac-search-app/build/fix_appicon.py
+!mac-search-app/build/refresh-icon-cache.sh
+!mac-search-app/build/darwin/
 
 # Test and benchmark results
 res.log
