@@ -343,11 +343,11 @@ func (idx *Indexer) BuildIndex(rootPath string, notifyStart func()) error {
 	logWithTime("开始扫描文件")
 	scanStart := time.Now()
 
-	// 优化：使用mac-file-scan扫描，只需一次sudo调用，比逐目录调用sudo ls快得多
-	// 策略：如果有sudo密码，先尝试用mac-file-scan（2分钟扫完全盘），失败再降级到逐目录扫描
+	// 优化：使用mac-file-search扫描，只需一次sudo调用，比逐目录调用sudo ls快得多
+	// 策略：如果有sudo密码，先尝试用mac-file-search（2分钟扫完全盘），失败再降级到逐目录扫描
 	useMacFileScan := idx.HasSudoPassword()
 	if useMacFileScan {
-		logToDebugWithTime(debugLog, "[STRATEGY] 检测到sudo密码，使用mac-file-scan一次性扫描")
+		logToDebugWithTime(debugLog, "[STRATEGY] 检测到sudo密码，使用mac-file-search一次性扫描")
 		err := idx.buildIndexWithMacFileScan(rootPath, debugLog)
 		if err == nil {
 			// 成功，直接返回
@@ -448,9 +448,9 @@ func (idx *Indexer) BuildIndex(rootPath string, notifyStart func()) error {
 			return nil
 		}
 
-		// mac-file-scan失败，降级到逐目录扫描
-		logToDebugWithTime(debugLog, "[STRATEGY] mac-file-scan失败: %v，降级到逐目录扫描", err)
-		logWithTime("mac-file-scan扫描失败，降级到逐目录扫描: %v", err)
+		// mac-file-search失败，降级到逐目录扫描
+		logToDebugWithTime(debugLog, "[STRATEGY] mac-file-search失败: %v，降级到逐目录扫描", err)
+		logWithTime("mac-file-search扫描失败，降级到逐目录扫描: %v", err)
 	}
 
 	// 原有的逐目录扫描逻辑（降级方案）
@@ -1604,12 +1604,12 @@ func (idx *Indexer) readDirWithSudo(dirPath string) ([]sudoEntry, error) {
 	return entries, nil
 }
 
-// buildIndexWithMacFileScan 使用mac-file-scan一次性扫描，然后解析JSON构建索引
+// buildIndexWithMacFileScan 使用mac-file-search一次性扫描，然后解析JSON构建索引
 // 优势：只需一次sudo调用，比逐目录调用sudo ls快得多（2分钟 vs 10+分钟）
 func (idx *Indexer) buildIndexWithMacFileScan(rootPath string, debugLog *os.File) error {
 	// 生成临时文件路径
-	tmpFile := filepath.Join(os.TempDir(), fmt.Sprintf("mac-file-scan-%d.json", time.Now().Unix()))
-	progressFile := filepath.Join(os.TempDir(), fmt.Sprintf("mac-file-scan-progress-%d.json", time.Now().Unix()))
+	tmpFile := filepath.Join(os.TempDir(), fmt.Sprintf("mac-file-search-%d.json", time.Now().Unix()))
+	progressFile := filepath.Join(os.TempDir(), fmt.Sprintf("mac-file-search-progress-%d.json", time.Now().Unix()))
 
 	defer func() {
 		// 确保删除临时文件
@@ -1632,18 +1632,18 @@ func (idx *Indexer) buildIndexWithMacFileScan(rootPath string, debugLog *os.File
 	}
 	idx.excludeMu.RUnlock()
 
-	// 获取mac-file-scan可执行文件路径（按优先级查找）
-	// 1. APP包内: Contents/Resources/mac-file-scan（生产环境）
-	// 2. 开发环境: bin/mac-file-scan
-	// 3. 父目录: ../mac-file-scan
-	// 4. 系统路径: /usr/local/bin/mac-file-scan
+	// 获取mac-file-search可执行文件路径（按优先级查找）
+	// 1. APP包内: Contents/Resources/mac-file-search（生产环境）
+	// 2. 开发环境: bin/mac-file-search
+	// 3. 父目录: ../mac-file-search
+	// 4. 系统路径: /usr/local/bin/mac-file-search
 
 	var macFileScanPath string
 
-	// 查找顺序1：APP包内 Contents/Resources/mac-file-scan
+	// 查找顺序1：APP包内 Contents/Resources/mac-file-search
 	if exePath, err := os.Executable(); err == nil {
 		// exePath类似：/path/to/mac-search-app.app/Contents/MacOS/mac-search-app
-		appResourcePath := filepath.Join(filepath.Dir(exePath), "..", "Resources", "mac-file-scan")
+		appResourcePath := filepath.Join(filepath.Dir(exePath), "..", "Resources", "mac-file-search")
 		if absPath, err := filepath.Abs(appResourcePath); err == nil {
 			if _, err := os.Stat(absPath); err == nil {
 				macFileScanPath = absPath
@@ -1652,9 +1652,9 @@ func (idx *Indexer) buildIndexWithMacFileScan(rootPath string, debugLog *os.File
 		}
 	}
 
-	// 查找顺序2：开发环境 bin/mac-file-scan
+	// 查找顺序2：开发环境 bin/mac-file-search
 	if macFileScanPath == "" {
-		binPath := filepath.Join("bin", "mac-file-scan")
+		binPath := filepath.Join("bin", "mac-file-search")
 		if absPath, err := filepath.Abs(binPath); err == nil {
 			if _, err := os.Stat(absPath); err == nil {
 				macFileScanPath = absPath
@@ -1663,9 +1663,9 @@ func (idx *Indexer) buildIndexWithMacFileScan(rootPath string, debugLog *os.File
 		}
 	}
 
-	// 查找顺序3：../mac-file-scan
+	// 查找顺序3：../mac-file-search
 	if macFileScanPath == "" {
-		parentPath := filepath.Join("..", "mac-file-scan")
+		parentPath := filepath.Join("..", "mac-file-search")
 		if absPath, err := filepath.Abs(parentPath); err == nil {
 			if _, err := os.Stat(absPath); err == nil {
 				macFileScanPath = absPath
@@ -1674,9 +1674,9 @@ func (idx *Indexer) buildIndexWithMacFileScan(rootPath string, debugLog *os.File
 		}
 	}
 
-	// 查找顺序4：/usr/local/bin/mac-file-scan
+	// 查找顺序4：/usr/local/bin/mac-file-search
 	if macFileScanPath == "" {
-		systemPath := "/usr/local/bin/mac-file-scan"
+		systemPath := "/usr/local/bin/mac-file-search"
 		if _, err := os.Stat(systemPath); err == nil {
 			macFileScanPath = systemPath
 			logToDebugWithTime(debugLog, "[MAC-FILE-SCAN] 找到可执行文件(系统路径): %s", macFileScanPath)
@@ -1684,7 +1684,7 @@ func (idx *Indexer) buildIndexWithMacFileScan(rootPath string, debugLog *os.File
 	}
 
 	if macFileScanPath == "" {
-		return fmt.Errorf("找不到mac-file-scan可执行文件，已尝试: APP包内, bin/, ../, /usr/local/bin/")
+		return fmt.Errorf("找不到mac-file-search可执行文件，已尝试: APP包内, bin/, ../, /usr/local/bin/")
 	}
 
 	if debugLog != nil {
@@ -1701,7 +1701,7 @@ func (idx *Indexer) buildIndexWithMacFileScan(rootPath string, debugLog *os.File
 		return fmt.Errorf("sudo密码未设置")
 	}
 
-	// 使用sudo执行mac-file-scan，添加 -progress-file 参数以获取实时进度
+	// 使用sudo执行mac-file-search，添加 -progress-file 参数以获取实时进度
 	cmdStr := fmt.Sprintf("echo '%s' | sudo -S '%s' -path '%s' -output '%s' -progress-file '%s' %s",
 		password, macFileScanPath, rootPath, tmpFile, progressFile, excludeArgs)
 
@@ -1711,12 +1711,12 @@ func (idx *Indexer) buildIndexWithMacFileScan(rootPath string, debugLog *os.File
 			macFileScanPath, rootPath, tmpFile, progressFile, excludeArgs)
 	}
 
-	logWithTime("调用mac-file-scan扫描（预计2分钟）")
+	logWithTime("调用mac-file-search扫描（预计2分钟）")
 	cmd := exec.Command("sh", "-c", cmdStr)
 
 	// 启动命令
 	if err := cmd.Start(); err != nil {
-		return fmt.Errorf("无法启动mac-file-scan: %v", err)
+		return fmt.Errorf("无法启动mac-file-search: %v", err)
 	}
 
 	// 启动goroutine监控进度文件
@@ -1805,7 +1805,7 @@ func (idx *Indexer) buildIndexWithMacFileScan(rootPath string, debugLog *os.File
 		case <-ticker.C:
 			// 检查停止标志
 			if idx.stopFlag.Load() {
-				logToDebugWithTime(debugLog, "[STOP] 检测到停止标志，终止mac-file-scan进程")
+				logToDebugWithTime(debugLog, "[STOP] 检测到停止标志，终止mac-file-search进程")
 				// 杀死进程
 				if cmd.Process != nil {
 					cmd.Process.Kill()
@@ -1820,7 +1820,7 @@ scanComplete:
 	scanDuration := time.Since(scanStartTime).Seconds()
 
 	if err != nil {
-		return fmt.Errorf("mac-file-scan执行失败: %v", err)
+		return fmt.Errorf("mac-file-search执行失败: %v", err)
 	}
 
 	logToDebugWithTime(debugLog, "[MAC-FILE-SCAN] 扫描完成，耗时: %.2f秒", scanDuration)

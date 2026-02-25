@@ -25,10 +25,10 @@
 
 ```bash
 # 扫描根目录并保存结果
-sudo ./mac-file-scan -path / -output result.json
+sudo ./mac-file-search -path / -output result.json
 
 # 查找大于100MB的文件
-sudo ./mac-file-scan -path / -min 100M -output large_files.json
+sudo ./mac-file-search -path / -min 100M -output large_files.json
 ```
 
 ---
@@ -107,26 +107,26 @@ sudo ./file-scan -path /
 
 ```bash
 # 只扫描大于 100MB 的文件（人性化单位）
-./mac-file-scan -path /Users -min 100M
+./mac-file-search -path /Users -min 100M
 
 # 只扫描 100MB - 500MB 之间的文件
-./mac-file-scan -path /Users -min 100M -max 500M
+./mac-file-search -path /Users -min 100M -max 500M
 
 # 只扫描小于 10KB 的文件
-./mac-file-scan -path /Users -max 10K
+./mac-file-search -path /Users -max 10K
 ```
 
 ### 文件类型过滤
 
 ```bash
 # 只扫描 .txt 和 .log 文件
-./mac-file-scan -path /var/log -include-ext .txt,.log
+./mac-file-search -path /var/log -include-ext .txt,.log
 
 # 排除临时文件和缓存文件
-./mac-file-scan -path /Users -exclude-ext .tmp,.cache,.bak
+./mac-file-search -path /Users -exclude-ext .tmp,.cache,.bak
 
 # 使用正则表达式匹配文件名
-./mac-file-scan -path /src -name "^test.*\.go$"
+./mac-file-search -path /src -name "^test.*\.go$"
 ```
 
 ### 显示文件树
@@ -171,7 +171,7 @@ sudo ./file-scan -path /
 
 ```bash
 # 使用人性化单位
-sudo ./mac-file-scan -path / -min 100M -output large_files.json -workers 32
+sudo ./mac-file-search -path / -min 100M -output large_files.json -workers 32
 
 # 分析结果，找出最大的文件
 grep '"is_dir":false' large_files.json | \
@@ -185,7 +185,7 @@ grep '"is_dir":false' large_files.json | \
 查找所有大于 10MB 的视频文件：
 
 ```bash
-./mac-file-scan -path /Users -min 10M -include-ext .mp4,.mkv,.avi,.mov -output videos.json
+./mac-file-search -path /Users -min 10M -include-ext .mp4,.mkv,.avi,.mov -output videos.json
 ```
 
 ### 示例 3：统计目录信息
@@ -193,7 +193,7 @@ grep '"is_dir":false' large_files.json | \
 统计项目目录的文件数量和总大小：
 
 ```bash
-./mac-file-scan -path ~/projects/myapp
+./mac-file-search -path ~/projects/myapp
 ```
 
 ### 示例 3：全盘扫描（排除外接硬盘）
@@ -201,7 +201,7 @@ grep '"is_dir":false' large_files.json | \
 扫描整个磁盘，但排除外接硬盘（macOS 需要 sudo）：
 
 ```bash
-sudo ./mac-file-scan -path / -workers 32 -exclude /Volumes/MacExtDisk -output disk_scan.json
+sudo ./mac-file-search -path / -workers 32 -exclude /Volumes/MacExtDisk -output disk_scan.json
 ```
 
 ### 示例 4：限制显示深度
@@ -286,7 +286,7 @@ grep -v '^#' scan.jsonl | jq -r 'select(.path | startswith("/usr/local")) | .pat
 - `benchmark_workers.sh` - Worker 性能测试脚本
 - `benchmark_result.txt` - 性能测试结果
 - `.gitignore` - Git 忽略文件配置
-- `mac-file-scan` - 编译后的可执行文件
+- `mac-file-search` - 编译后的可执行文件
 
 ## 性能说明
 
@@ -342,7 +342,7 @@ grep -v '^#' scan.jsonl | jq -r 'select(.path | startswith("/usr/local")) | .pat
 10. **虚拟内存文件建议**：
    - 如需排除虚拟内存文件（通常几十GB），可以使用：
    ```bash
-   sudo ./mac-file-scan -path / -exclude /private/var/vm,/System/Volumes/VM
+   sudo ./mac-file-search -path / -exclude /private/var/vm,/System/Volumes/VM
    ```
 
 ## 技术实现

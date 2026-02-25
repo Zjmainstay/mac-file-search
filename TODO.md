@@ -21,7 +21,7 @@
 - [ ] 测试命令行工具构建
   ```bash
   make scanner
-  ./mac-file-scan -path /tmp -output test.json
+  ./mac-file-search -path /tmp -output test.json
   ```
 
 - [ ] 测试 GUI 应用构建

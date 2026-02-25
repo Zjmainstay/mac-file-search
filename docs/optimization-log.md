@@ -691,7 +691,7 @@ tail -100 ~/.mac-search-app/debug.log
 [21:40:35]   [0] /Volumes/MacExtDisk
 [21:40:36] 准备删除 236182 条记录（路径: /Applications 及其子路径）
 [21:40:42] 清空后数据库有 0 条记录
-[21:40:42] [STRATEGY] 检测到sudo密码，使用mac-file-scan一次性扫描
+[21:40:42] [STRATEGY] 检测到sudo密码，使用mac-file-search一次性扫描
 [21:40:42] [MAC-FILE-SCAN] 扫描路径: /Applications
 [21:40:48] [MAC-FILE-SCAN] 扫描完成，耗时: 6.24秒
 [21:40:54] [MAC-FILE-SCAN] 解析完成，共236187行，插入236182条，耗时: 5.99秒
@@ -747,7 +747,7 @@ sqlite3 ~/.mac-search-app/index.db "PRAGMA wal_checkpoint(TRUNCATE);"
 
 2. **清理任务执行时机**：
    - 索引完成后：checkpoint（几秒）
-   - 使用 mac-file-scan：VACUUM + checkpoint（30-60秒）
+   - 使用 mac-file-search：VACUUM + checkpoint（30-60秒）
    - 删除索引：VACUUM + checkpoint（30-60秒）
 
 3. **优雅退出**：

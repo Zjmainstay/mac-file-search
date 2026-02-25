@@ -5,7 +5,7 @@
 *.so
 *.dylib
 file-scan
-mac-file-scan
+mac-file-search
 
 # Test binary, built with `go test -c`
 *.test

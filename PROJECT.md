@@ -120,7 +120,7 @@ make
 
 ```bash
 # 命令行工具
-sudo ./mac-file-scan -path / -output result.json
+sudo ./mac-file-search -path / -output result.json
 
 # GUI 应用
 open mac-search-app/build/bin/Mac文件搜索.app

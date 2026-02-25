@@ -137,11 +137,11 @@ function formatModTime(timestamp) {
 
 **验证mod_time字段**:
 ```bash
-# 1. 重新构建mac-file-scan
-go build -o mac-file-scan main.go
+# 1. 重新构建mac-file-search
+go build -o mac-file-search main.go
 
 # 2. 扫描测试
-./mac-file-scan -path /Applications -output /tmp/test.json
+./mac-file-search -path /Applications -output /tmp/test.json
 
 # 3. 检查JSON是否包含mod_time
 grep -v '^#' /tmp/test.json | head -3 | jq '.'
@@ -390,8 +390,8 @@ func logToDebugWithTime(debugLog *os.File, format string, args ...interface{}) {
 [15:51:40] 清空数据耗时: 0.52秒
 [15:51:40] 设置性能参数
 [15:51:40] 开始扫描文件
-[15:51:40] [STRATEGY] 检测到sudo密码，使用mac-file-scan一次性扫描
-[15:51:40] 调用mac-file-scan扫描（预计2分钟）
+[15:51:40] [STRATEGY] 检测到sudo密码，使用mac-file-search一次性扫描
+[15:51:40] 调用mac-file-search扫描（预计2分钟）
 [15:51:47] [MAC-FILE-SCAN] 扫描完成，耗时: 6.71秒
 [15:51:47] [MAC-FILE-SCAN] 输出文件大小: 51.98 MB
 [15:51:47] 解析JSON并导入数据库

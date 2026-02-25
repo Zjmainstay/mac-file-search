@@ -1,9 +1,9 @@
-# Makefile for mac-file-scan project
+# Makefile for mac-file-search project
 # 构建命令行扫描工具和GUI应用
 
 # 变量定义
 GO := go
-BINARY_NAME := mac-file-scan
+BINARY_NAME := mac-file-search
 MAIN_GO := main.go
 BUILD_DIR := .
 APP_BIN_DIR := mac-search-app/bin
@@ -24,13 +24,13 @@ scanner:
 	@echo "==> 复制到: $(APP_BIN_DIR)/$(BINARY_NAME)"
 	@echo "✓ 命令行扫描工具构建完成"
 
-# 构建GUI应用（自动打包mac-file-scan）
+# 构建GUI应用（自动打包mac-file-search）
 # 注意：如果前端构建遇到问题，使用 make app-skip-frontend
 .PHONY: app
 app: scanner
 	@echo "==> 编译GUI应用..."
 	@cd mac-search-app && $(WAILS) build -s || (echo "提示：前端已预编译，使用 -s 跳过前端构建")
-	@echo "==> 将mac-file-scan打包到APP内..."
+	@echo "==> 将mac-file-search打包到APP内..."
 	@mkdir -p "mac-search-app/build/bin/Mac文件搜索.app/Contents/Resources"
 	@cp $(BUILD_DIR)/$(BINARY_NAME) "mac-search-app/build/bin/Mac文件搜索.app/Contents/Resources/$(BINARY_NAME)"
 	@chmod +x "mac-search-app/build/bin/Mac文件搜索.app/Contents/Resources/$(BINARY_NAME)"
@@ -42,7 +42,7 @@ app: scanner
 app-skip-frontend: scanner
 	@echo "==> 编译GUI应用（跳过前端构建）..."
 	@cd mac-search-app && $(WAILS) build -s
-	@echo "==> 将mac-file-scan打包到APP内..."
+	@echo "==> 将mac-file-search打包到APP内..."
 	@mkdir -p "mac-search-app/build/bin/Mac文件搜索.app/Contents/Resources"
 	@cp $(BUILD_DIR)/$(BINARY_NAME) "mac-search-app/build/bin/Mac文件搜索.app/Contents/Resources/$(BINARY_NAME)"
 	@chmod +x "mac-search-app/build/bin/Mac文件搜索.app/Contents/Resources/$(BINARY_NAME)"
@@ -89,6 +89,6 @@ help:
 	@echo "  make help     - 显示此帮助信息"
 	@echo ""
 	@echo "构建产物："
-	@echo "  ./mac-file-scan                    - 命令行工具"
-	@echo "  ./mac-search-app/bin/mac-file-scan - 命令行工具副本（供GUI调用）"
-	@echo "  ./mac-search-app/build/bin/        - GUI应用包"
+	@echo "  ./mac-file-search                    - 命令行工具"
+	@echo "  ./mac-search-app/bin/mac-file-search - 命令行工具副本（供GUI调用）"
+	@echo "  ./mac-search-app/build/bin/          - GUI应用包"

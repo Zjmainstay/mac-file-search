@@ -9,7 +9,7 @@ printf "%-10s %-15s %-20s\n" "Workers" "用时(秒)" "速度(文件/秒)"
 echo "---------------------------------------------------"
 
 for workers in "${WORKERS[@]}"; do
-    output=$(./mac-file-scan -path "$TEST_PATH" -workers $workers -exclude /Volumes/MacExtDisk 2>&1)
+    output=$(./mac-file-search -path "$TEST_PATH" -workers $workers -exclude /Volumes/MacExtDisk 2>&1)
     
     # 提取用时
     time_str=$(echo "$output" | grep "⏱️  用时:" | awk '{print $3}')
