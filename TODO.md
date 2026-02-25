@@ -9,12 +9,12 @@
   module github.com/Zjmainstay/mac-file-search
   ```
 
-- [ ] 更新 README.md 中的占位符：
-  - [ ] 替换 `yourusername` 为实际的 GitHub 用户名
-  - [ ] 替换邮箱地址 `your.email@example.com`
-  - [ ] 更新克隆仓库的 URL
+- [x] 更新 README.md 中的占位符：
+  - [x] 替换 `yourusername` 为实际的 GitHub 用户名
+  - [x] 替换邮箱地址 `your.email@example.com`
+  - [x] 更新克隆仓库的 URL
 
-- [ ] 更新 CONTRIBUTING.md 中的 GitHub 链接
+- [x] 更新 CONTRIBUTING.md 中的 GitHub 链接
 
 ### 2. 测试构建
 

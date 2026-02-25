@@ -70,7 +70,7 @@ sudo ./mac-file-search -path / -min 100M -output large_files.json
 
 ```bash
 # 克隆仓库
-git clone https://github.com/yourusername/mac-file-search.git
+git clone https://github.com/Zjmainstay/mac-file-search.git
 cd mac-file-search
 
 # 构建所有（命令行 + GUI）

@@ -234,7 +234,7 @@ docs: 更新 README 中的使用示例
 
 如有任何问题，可以通过以下方式联系：
 
-- 提交 [Issue](https://github.com/yourusername/mac-file-search/issues)
+- 提交 [Issue](https://github.com/Zjmainstay/mac-file-search/issues)
 - 在 Pull Request 中讨论
 
 ---
