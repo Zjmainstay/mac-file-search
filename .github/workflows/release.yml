@@ -49,6 +49,9 @@ jobs:
           wails build -s
           cd ..
 
+          # 移除隔离属性，避免 macOS Gatekeeper 阻止
+          xattr -cr "mac-search-app/build/bin/Mac文件搜索.app"
+
           # 创建 DMG（可选）
           # brew install create-dmg
           # create-dmg --volname "Mac文件搜索" \
@@ -59,9 +62,9 @@ jobs:
           #   "mac-file-search-${{ steps.version.outputs.VERSION }}.dmg" \
           #   "mac-search-app/build/bin/"
 
-          # 直接打包 .app 为 zip
+          # 直接打包 .app 为 zip（使用 ditto 保留权限）
           cd mac-search-app/build/bin
-          zip -r ../../../mac-file-search-${{ steps.version.outputs.VERSION }}-app.zip "Mac文件搜索.app"
+          ditto -c -k --keepParent "Mac文件搜索.app" "../../../mac-file-search-${{ steps.version.outputs.VERSION }}-app.zip"
           cd ../../..
 
       - name: Generate checksums
@@ -95,7 +98,11 @@ jobs:
             1. 下载 `mac-file-search-*-app.zip`
             2. 解压得到 `Mac文件搜索.app`
             3. 移动到"应用程序"文件夹
-            4. 首次打开可能需要在"系统偏好设置" → "安全性与隐私"中允许
+            4. **首次打开前**，在终端执行（避免"已损坏"提示）：
+               ```bash
+               xattr -cr "/Applications/Mac文件搜索.app"
+               ```
+            5. 或者右键点击应用，选择"打开"（而非双击）
 
             #### 命令行工具
             ```bash
