@@ -1,3 +1,3 @@
-module github.com/yourusername/mac-file-search
+module github.com/Zjmainstay/mac-file-search
 
 go 1.21
