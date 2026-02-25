@@ -392,11 +392,11 @@ func logToDebugWithTime(debugLog *os.File, format string, args ...interface{}) {
 [15:51:40] 开始扫描文件
 [15:51:40] [STRATEGY] 检测到sudo密码，使用mac-file-search一次性扫描
 [15:51:40] 调用mac-file-search扫描（预计2分钟）
-[15:51:47] [MAC-FILE-SCAN] 扫描完成，耗时: 6.71秒
-[15:51:47] [MAC-FILE-SCAN] 输出文件大小: 51.98 MB
+[15:51:47] [MAC-FILE-SEARCH] 扫描完成，耗时: 6.71秒
+[15:51:47] [MAC-FILE-SEARCH] 输出文件大小: 51.98 MB
 [15:51:47] 解析JSON并导入数据库
 [15:51:50] [PROGRESS] 已插入: 5000 条
-[15:51:53] [MAC-FILE-SCAN] 解析完成，共236090行，插入236085条，耗时: 6.04秒
+[15:51:53] [MAC-FILE-SEARCH] 解析完成，共236090行，插入236085条，耗时: 6.04秒
 [15:51:53] [CLEANUP] 临时文件已删除
 [15:51:53] [COMPLETE] 索引构建完成，总耗时: 17.30秒
 ```

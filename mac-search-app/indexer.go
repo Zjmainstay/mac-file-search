@@ -1647,7 +1647,7 @@ func (idx *Indexer) buildIndexWithMacFileScan(rootPath string, debugLog *os.File
 		if absPath, err := filepath.Abs(appResourcePath); err == nil {
 			if _, err := os.Stat(absPath); err == nil {
 				macFileScanPath = absPath
-				logToDebugWithTime(debugLog, "[MAC-FILE-SCAN] 找到可执行文件(APP包内): %s", macFileScanPath)
+				logToDebugWithTime(debugLog, "[MAC-FILE-SEARCH] 找到可执行文件(APP包内): %s", macFileScanPath)
 			}
 		}
 	}
@@ -1658,7 +1658,7 @@ func (idx *Indexer) buildIndexWithMacFileScan(rootPath string, debugLog *os.File
 		if absPath, err := filepath.Abs(binPath); err == nil {
 			if _, err := os.Stat(absPath); err == nil {
 				macFileScanPath = absPath
-				logToDebugWithTime(debugLog, "[MAC-FILE-SCAN] 找到可执行文件(开发环境): %s", macFileScanPath)
+				logToDebugWithTime(debugLog, "[MAC-FILE-SEARCH] 找到可执行文件(开发环境): %s", macFileScanPath)
 			}
 		}
 	}
@@ -1669,7 +1669,7 @@ func (idx *Indexer) buildIndexWithMacFileScan(rootPath string, debugLog *os.File
 		if absPath, err := filepath.Abs(parentPath); err == nil {
 			if _, err := os.Stat(absPath); err == nil {
 				macFileScanPath = absPath
-				logToDebugWithTime(debugLog, "[MAC-FILE-SCAN] 找到可执行文件(父目录): %s", macFileScanPath)
+				logToDebugWithTime(debugLog, "[MAC-FILE-SEARCH] 找到可执行文件(父目录): %s", macFileScanPath)
 			}
 		}
 	}
@@ -1679,7 +1679,7 @@ func (idx *Indexer) buildIndexWithMacFileScan(rootPath string, debugLog *os.File
 		systemPath := "/usr/local/bin/mac-file-search"
 		if _, err := os.Stat(systemPath); err == nil {
 			macFileScanPath = systemPath
-			logToDebugWithTime(debugLog, "[MAC-FILE-SCAN] 找到可执行文件(系统路径): %s", macFileScanPath)
+			logToDebugWithTime(debugLog, "[MAC-FILE-SEARCH] 找到可执行文件(系统路径): %s", macFileScanPath)
 		}
 	}
 
@@ -1688,11 +1688,11 @@ func (idx *Indexer) buildIndexWithMacFileScan(rootPath string, debugLog *os.File
 	}
 
 	if debugLog != nil {
-		logToDebugWithTime(debugLog, "[MAC-FILE-SCAN] 可执行文件: %s", macFileScanPath)
-		logToDebugWithTime(debugLog, "[MAC-FILE-SCAN] 扫描路径: %s", rootPath)
-		logToDebugWithTime(debugLog, "[MAC-FILE-SCAN] 输出文件: %s", tmpFile)
-		logToDebugWithTime(debugLog, "[MAC-FILE-SCAN] 进度文件: %s", progressFile)
-		logToDebugWithTime(debugLog, "[MAC-FILE-SCAN] 排除路径: %s", excludeArgs)
+		logToDebugWithTime(debugLog, "[MAC-FILE-SEARCH] 可执行文件: %s", macFileScanPath)
+		logToDebugWithTime(debugLog, "[MAC-FILE-SEARCH] 扫描路径: %s", rootPath)
+		logToDebugWithTime(debugLog, "[MAC-FILE-SEARCH] 输出文件: %s", tmpFile)
+		logToDebugWithTime(debugLog, "[MAC-FILE-SEARCH] 进度文件: %s", progressFile)
+		logToDebugWithTime(debugLog, "[MAC-FILE-SEARCH] 排除路径: %s", excludeArgs)
 	}
 
 	// 构建命令
@@ -1707,7 +1707,7 @@ func (idx *Indexer) buildIndexWithMacFileScan(rootPath string, debugLog *os.File
 
 	if debugLog != nil {
 		// 记录命令（隐藏密码）
-		logToDebugWithTime(debugLog, "[MAC-FILE-SCAN] 执行命令: sudo '%s' -path '%s' -output '%s' -progress-file '%s' %s",
+		logToDebugWithTime(debugLog, "[MAC-FILE-SEARCH] 执行命令: sudo '%s' -path '%s' -output '%s' -progress-file '%s' %s",
 			macFileScanPath, rootPath, tmpFile, progressFile, excludeArgs)
 	}
 
@@ -1823,7 +1823,7 @@ scanComplete:
 		return fmt.Errorf("mac-file-search执行失败: %v", err)
 	}
 
-	logToDebugWithTime(debugLog, "[MAC-FILE-SCAN] 扫描完成，耗时: %.2f秒", scanDuration)
+	logToDebugWithTime(debugLog, "[MAC-FILE-SEARCH] 扫描完成，耗时: %.2f秒", scanDuration)
 	logWithTime("扫描完成，耗时: %.2f秒", scanDuration)
 
 	// 检查输出文件
@@ -1831,7 +1831,7 @@ scanComplete:
 	if err != nil {
 		return fmt.Errorf("输出文件不存在: %v", err)
 	}
-	logToDebugWithTime(debugLog, "[MAC-FILE-SCAN] 输出文件大小: %.2f MB", float64(fileInfo.Size())/(1024*1024))
+	logToDebugWithTime(debugLog, "[MAC-FILE-SEARCH] 输出文件大小: %.2f MB", float64(fileInfo.Size())/(1024*1024))
 
 	// 记录扫描阶段的diskUsedSize，用于导入阶段计算进度（70%-100%）
 	// 从进度文件获取最终的diskUsedSize
@@ -2032,7 +2032,7 @@ scanComplete:
 	}
 
 	parseDuration := time.Since(parseStart).Seconds()
-	logToDebugWithTime(debugLog, "[MAC-FILE-SCAN] 解析完成，共%d行，插入%d条，耗时: %.2f秒",
+	logToDebugWithTime(debugLog, "[MAC-FILE-SEARCH] 解析完成，共%d行，插入%d条，耗时: %.2f秒",
 		lineCount, insertCount, parseDuration)
 	logWithTime("解析完成，共%d行，插入%d条，耗时: %.2f秒", lineCount, insertCount, parseDuration)
 
