@@ -109,7 +109,7 @@ mac-file-search/
 
 ```bash
 # 克隆仓库
-git clone https://github.com/yourusername/mac-file-search.git
+git clone https://github.com/Zjmainstay/mac-file-search.git
 cd mac-file-search
 
 # 构建所有
