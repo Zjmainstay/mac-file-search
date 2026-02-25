@@ -14,35 +14,28 @@
 
 **GUI 应用**
 
-**🎉 超简单：解压后双击 `install.command` 即可自动安装！**
+**⚠️ 重要：应用未签名，下载后需要移除隔离属性**
 
 ```bash
-# 下载最新版本
+# 1. 下载最新版本
 curl -LO https://github.com/Zjmainstay/mac-file-search/releases/latest/download/mac-file-search-*-app.zip
 
-# 解压（自动或手动）
+# 2. 解压
 unzip mac-file-search-*-app.zip
 
-# 双击 install.command 文件，自动完成：
-#   ✅ 移除 Gatekeeper 隔离属性
-#   ✅ 安装到应用程序文件夹
-#   ✅ 可直接从启动台打开
+# 3. 移除隔离属性（必须执行）
+xattr -cr "Mac文件搜索.app"
+
+# 4. 移动到应用程序文件夹
+mv "Mac文件搜索.app" /Applications/
+
+# 5. 从启动台打开「Mac文件搜索」
 ```
 
-**或使用命令行安装脚本：**
+**一行命令版本：**
 ```bash
-# 方法 1：使用安装脚本（自动处理 Gatekeeper 问题）
-curl -LO https://github.com/Zjmainstay/mac-file-search/releases/latest/download/mac-file-search-*-app.zip
-curl -LO https://raw.githubusercontent.com/Zjmainstay/mac-file-search/main/install.sh
-chmod +x install.sh
-./install.sh mac-file-search-*-app.zip
-
-# 方法 2：手动安装
-# 1. 下载并解压 mac-file-search-*-app.zip
-# 2. 移除隔离属性（必须执行）：
-xattr -cr "Mac文件搜索.app"
-# 3. 移动到应用程序文件夹：
-mv "Mac文件搜索.app" /Applications/
+# 下载解压后，在解压目录执行：
+xattr -cr "Mac文件搜索.app" && mv "Mac文件搜索.app" /Applications/
 ```
 
 **命令行工具**

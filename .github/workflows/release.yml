@@ -52,17 +52,10 @@ jobs:
           # 移除隔离属性，避免 macOS Gatekeeper 阻止
           xattr -cr "mac-search-app/build/bin/Mac文件搜索.app"
 
-          # 准备打包目录（包含 app + install.command）
-          mkdir -p package-temp
-          cp -r "mac-search-app/build/bin/Mac文件搜索.app" package-temp/
-          cp install.command package-temp/
-          chmod +x package-temp/install.command
-
-          # 打包为 ZIP（使用 ditto 保留权限）
-          cd package-temp
-          ditto -c -k . "../mac-file-search-${{ steps.version.outputs.VERSION }}-app.zip"
-          cd ..
-          rm -rf package-temp
+          # 打包 .app 为 zip（使用 ditto 保留权限）
+          cd mac-search-app/build/bin
+          ditto -c -k --keepParent "Mac文件搜索.app" "../../../mac-file-search-${{ steps.version.outputs.VERSION }}-app.zip"
+          cd ../../..
 
       - name: Generate checksums
         run: |
@@ -93,24 +86,22 @@ jobs:
 
             #### GUI 应用
 
-            **🎉 超简单：解压后双击 `install.command` 即可！**
+            **⚠️ 重要：应用未签名，必须先移除隔离属性**
 
-            ZIP 包中包含：
-            - `Mac文件搜索.app` - 应用程序
-            - `install.command` - 自动安装脚本（双击运行）
-
-            **步骤：**
-            1. 下载并解压 `mac-file-search-${{ steps.version.outputs.VERSION }}-app.zip`
-            2. **双击 `install.command`** 文件
-            3. 脚本会自动：
-               - ✅ 移除 Gatekeeper 隔离属性
-               - ✅ 安装到「应用程序」文件夹
-            4. 从「启动台」打开「Mac文件搜索」即可使用
-
-            **手动安装（可选）：**
             ```bash
+            # 1. 下载并解压 ZIP
+            unzip mac-file-search-${{ steps.version.outputs.VERSION }}-app.zip
+
+            # 2. 移除隔离属性（必须执行）
             xattr -cr "Mac文件搜索.app"
+
+            # 3. 移动到应用程序文件夹
             mv "Mac文件搜索.app" /Applications/
+            ```
+
+            **一行命令：**
+            ```bash
+            xattr -cr "Mac文件搜索.app" && mv "Mac文件搜索.app" /Applications/
             ```
 
             #### 命令行工具
