@@ -13,9 +13,23 @@
 从 [Releases 页面](https://github.com/Zjmainstay/mac-file-search/releases) 下载最新版本：
 
 **GUI 应用**
-- 下载 `mac-file-search-*-app.zip`
-- 解压后拖拽到"应用程序"文件夹
-- 首次打开可能需要在"系统偏好设置"中允许
+
+**⚠️ 重要：由于应用未签名，下载后必须先移除 Gatekeeper 隔离属性才能使用**
+
+```bash
+# 方法 1：使用安装脚本（推荐，自动处理）
+curl -LO https://github.com/Zjmainstay/mac-file-search/releases/latest/download/mac-file-search-*-app.zip
+curl -LO https://raw.githubusercontent.com/Zjmainstay/mac-file-search/main/install.sh
+chmod +x install.sh
+./install.sh mac-file-search-*-app.zip
+
+# 方法 2：手动安装
+# 1. 下载并解压 mac-file-search-*-app.zip
+# 2. 移除隔离属性（必须执行）：
+xattr -cr "Mac文件搜索.app"
+# 3. 移动到应用程序文件夹：
+mv "Mac文件搜索.app" /Applications/
+```
 
 **命令行工具**
 ```bash

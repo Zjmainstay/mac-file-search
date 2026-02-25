@@ -95,14 +95,25 @@ jobs:
             ### 📝 安装说明
 
             #### GUI 应用
-            1. 下载 `mac-file-search-*-app.zip`
-            2. 解压得到 `Mac文件搜索.app`
-            3. 移动到"应用程序"文件夹
-            4. **首次打开前**，在终端执行（避免"已损坏"提示）：
-               ```bash
-               xattr -cr "/Applications/Mac文件搜索.app"
-               ```
-            5. 或者右键点击应用，选择"打开"（而非双击）
+
+            **⚠️ 重要：应用未签名，必须先移除 Gatekeeper 隔离属性**
+
+            **方法 1：使用安装脚本（推荐）**
+            ```bash
+            curl -LO ${{ github.server_url }}/${{ github.repository }}/releases/download/${{ steps.version.outputs.VERSION }}/mac-file-search-${{ steps.version.outputs.VERSION }}-app.zip
+            curl -LO ${{ github.server_url }}/${{ github.repository }}/raw/main/install.sh
+            chmod +x install.sh
+            ./install.sh mac-file-search-${{ steps.version.outputs.VERSION }}-app.zip
+            ```
+
+            **方法 2：手动安装**
+            ```bash
+            # 1. 下载并解压 ZIP
+            # 2. 移除隔离属性（必须执行）：
+            xattr -cr "Mac文件搜索.app"
+            # 3. 移动到应用程序文件夹：
+            mv "Mac文件搜索.app" /Applications/
+            ```
 
             #### 命令行工具
             ```bash
