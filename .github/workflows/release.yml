@@ -45,8 +45,8 @@ jobs:
       - name: Build GUI App
         run: |
           cd mac-search-app
-          # 复制前端 dist（因为我们跳过前端构建）
-          wails build -s
+          # 正常构建（包含前端编译和嵌入）
+          wails build
           cd ..
 
           # 移除隔离属性，避免 macOS Gatekeeper 阻止

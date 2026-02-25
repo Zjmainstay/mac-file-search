@@ -25,11 +25,10 @@ scanner:
 	@echo "✓ 命令行扫描工具构建完成"
 
 # 构建GUI应用（自动打包mac-file-search）
-# 注意：如果前端构建遇到问题，使用 make app-skip-frontend
 .PHONY: app
 app: scanner
 	@echo "==> 编译GUI应用..."
-	@cd mac-search-app && $(WAILS) build -s || (echo "提示：前端已预编译，使用 -s 跳过前端构建")
+	@cd mac-search-app && $(WAILS) build
 	@echo "==> 将mac-file-search打包到APP内..."
 	@mkdir -p "mac-search-app/build/bin/Mac文件搜索.app/Contents/Resources"
 	@cp $(BUILD_DIR)/$(BINARY_NAME) "mac-search-app/build/bin/Mac文件搜索.app/Contents/Resources/$(BINARY_NAME)"
