@@ -14,10 +14,24 @@
 
 **GUI 应用**
 
-**⚠️ 重要：由于应用未签名，下载后必须先移除 Gatekeeper 隔离属性才能使用**
+**🎉 超简单：解压后双击 `install.command` 即可自动安装！**
 
 ```bash
-# 方法 1：使用安装脚本（推荐，自动处理）
+# 下载最新版本
+curl -LO https://github.com/Zjmainstay/mac-file-search/releases/latest/download/mac-file-search-*-app.zip
+
+# 解压（自动或手动）
+unzip mac-file-search-*-app.zip
+
+# 双击 install.command 文件，自动完成：
+#   ✅ 移除 Gatekeeper 隔离属性
+#   ✅ 安装到应用程序文件夹
+#   ✅ 可直接从启动台打开
+```
+
+**或使用命令行安装脚本：**
+```bash
+# 方法 1：使用安装脚本（自动处理 Gatekeeper 问题）
 curl -LO https://github.com/Zjmainstay/mac-file-search/releases/latest/download/mac-file-search-*-app.zip
 curl -LO https://raw.githubusercontent.com/Zjmainstay/mac-file-search/main/install.sh
 chmod +x install.sh
