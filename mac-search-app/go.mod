@@ -1,4 +1,4 @@
-module mac-search-app
+module github.com/Zjmainstay/mac-file-search/mac-search-app
 
 go 1.23
 
