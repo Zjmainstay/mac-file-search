@@ -2,10 +2,35 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Version](https://img.shields.io/badge/Go-1.21+-blue.svg)](https://golang.org)
+[![Release](https://img.shields.io/github/v/release/Zjmainstay/mac-file-search)](https://github.com/Zjmainstay/mac-file-search/releases)
 
 基于 Go 语言和多协程实现的高性能磁盘文件遍历工具，提供 **GUI 应用** 和 **命令行工具** 两种使用方式。
 
 ## 🚀 快速开始
+
+### 📦 下载预编译版本（推荐）
+
+从 [Releases 页面](https://github.com/Zjmainstay/mac-file-search/releases) 下载最新版本：
+
+**GUI 应用**
+- 下载 `mac-file-search-*-app.zip`
+- 解压后拖拽到"应用程序"文件夹
+- 首次打开可能需要在"系统偏好设置"中允许
+
+**命令行工具**
+```bash
+# ARM64 (Apple Silicon)
+curl -LO https://github.com/Zjmainstay/mac-file-search/releases/latest/download/mac-file-search-*-darwin-arm64.tar.gz
+tar -xzf mac-file-search-*-darwin-arm64.tar.gz
+sudo mv mac-file-search /usr/local/bin/
+
+# AMD64 (Intel)
+curl -LO https://github.com/Zjmainstay/mac-file-search/releases/latest/download/mac-file-search-*-darwin-amd64.tar.gz
+tar -xzf mac-file-search-*-darwin-amd64.tar.gz
+sudo mv mac-file-search /usr/local/bin/
+```
+
+### 🛠️ 从源码构建
 
 ### GUI应用（推荐给普通用户）
 

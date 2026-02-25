@@ -1,0 +1,131 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'  # 当推送 v* 格式的 tag 时触发（如 v0.1.0）
+
+permissions:
+  contents: write  # 需要写权限来创建 Release 和上传文件
+
+jobs:
+  build-and-release:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Install Wails
+        run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Get version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Build CLI tool
+        run: |
+          make scanner
+          # 打包命令行工具
+          tar -czf mac-file-search-${{ steps.version.outputs.VERSION }}-darwin-arm64.tar.gz mac-file-search
+          # 如果需要 x86_64 版本
+          GOARCH=amd64 go build -o mac-file-search-amd64 main.go
+          tar -czf mac-file-search-${{ steps.version.outputs.VERSION }}-darwin-amd64.tar.gz mac-file-search-amd64
+
+      - name: Build GUI App
+        run: |
+          cd mac-search-app
+          # 复制前端 dist（因为我们跳过前端构建）
+          wails build -s
+          cd ..
+
+          # 创建 DMG（可选）
+          # brew install create-dmg
+          # create-dmg --volname "Mac文件搜索" \
+          #   --window-pos 200 120 --window-size 800 400 \
+          #   --icon-size 100 --icon "Mac文件搜索.app" 200 190 \
+          #   --hide-extension "Mac文件搜索.app" \
+          #   --app-drop-link 600 185 \
+          #   "mac-file-search-${{ steps.version.outputs.VERSION }}.dmg" \
+          #   "mac-search-app/build/bin/"
+
+          # 直接打包 .app 为 zip
+          cd mac-search-app/build/bin
+          zip -r ../../../mac-file-search-${{ steps.version.outputs.VERSION }}-app.zip "Mac文件搜索.app"
+          cd ../../..
+
+      - name: Generate checksums
+        run: |
+          shasum -a 256 mac-file-search-${{ steps.version.outputs.VERSION }}-*.tar.gz > checksums.txt
+          shasum -a 256 mac-file-search-${{ steps.version.outputs.VERSION }}-*.zip >> checksums.txt
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            mac-file-search-${{ steps.version.outputs.VERSION }}-darwin-arm64.tar.gz
+            mac-file-search-${{ steps.version.outputs.VERSION }}-darwin-amd64.tar.gz
+            mac-file-search-${{ steps.version.outputs.VERSION }}-app.zip
+            checksums.txt
+          body: |
+            ## 🎉 Mac File Search ${{ steps.version.outputs.VERSION }}
+
+            ### ⚡ 下载
+
+            #### GUI 应用（推荐）
+            - [Mac文件搜索.app (Universal)](${{ github.server_url }}/${{ github.repository }}/releases/download/${{ steps.version.outputs.VERSION }}/mac-file-search-${{ steps.version.outputs.VERSION }}-app.zip) - 图形界面应用
+
+            #### 命令行工具
+            - [mac-file-search (ARM64)](${{ github.server_url }}/${{ github.repository }}/releases/download/${{ steps.version.outputs.VERSION }}/mac-file-search-${{ steps.version.outputs.VERSION }}-darwin-arm64.tar.gz) - Apple Silicon (M1/M2/M3)
+            - [mac-file-search (AMD64)](${{ github.server_url }}/${{ github.repository }}/releases/download/${{ steps.version.outputs.VERSION }}/mac-file-search-${{ steps.version.outputs.VERSION }}-darwin-amd64.tar.gz) - Intel 芯片
+
+            ### 📝 安装说明
+
+            #### GUI 应用
+            1. 下载 `mac-file-search-*-app.zip`
+            2. 解压得到 `Mac文件搜索.app`
+            3. 移动到"应用程序"文件夹
+            4. 首次打开可能需要在"系统偏好设置" → "安全性与隐私"中允许
+
+            #### 命令行工具
+            ```bash
+            # 下载并解压
+            tar -xzf mac-file-search-*-darwin-*.tar.gz
+
+            # 移动到系统路径
+            sudo mv mac-file-search /usr/local/bin/
+
+            # 验证安装
+            mac-file-search --help
+            ```
+
+            ### ✨ 主要功能
+            - ⚡ 极速扫描：2分钟扫描200万+文件
+            - 🔍 强大搜索：支持模糊搜索、正则表达式
+            - 💾 离线使用：一次扫描，永久搜索
+            - 📦 双模式：命令行工具 + GUI应用
+
+            ### 📖 文档
+            - [README](https://github.com/${{ github.repository }}/blob/main/README.md)
+            - [构建说明](https://github.com/${{ github.repository }}/blob/main/BUILD.md)
+            - [贡献指南](https://github.com/${{ github.repository }}/blob/main/CONTRIBUTING.md)
+
+            ### 🔐 校验和
+            下载后请验证文件完整性：
+            ```bash
+            shasum -a 256 -c checksums.txt
+            ```
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
